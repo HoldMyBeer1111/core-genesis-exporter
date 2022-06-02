@@ -25,8 +25,9 @@ func ExportTfmFarms(app *terra.TerraApp, bl util.Blacklist) (util.SnapshotBalanc
 		}
 		prefix := util.GeneratePrefix("reward")
 		app.WasmKeeper.IterateContractStateWithPrefix(sdk.UnwrapSDKContext(ctx), farmAddr, prefix, func(key, value []byte) bool {
+
 			userAddr := string(key)
-			stakerUstBal := getStakerUstBal(ctx, qs, userAddr, farm)
+			stakerUstBal := getStakerUstBal(ctx, qs, userAddr, farmAddr)
 
 			snapshot.AppendOrAddBalance(userAddr, util.SnapshotBalance{
 				Denom:   util.DenomUST,
@@ -39,17 +40,14 @@ func ExportTfmFarms(app *terra.TerraApp, bl util.Blacklist) (util.SnapshotBalanc
 	return snapshot, nil
 }
 
-func getStakerUstBal(ctx context.Context, q types.QueryServer, userAddr string, farmAddr string) sdk.Int {
+func getStakerUstBal(ctx context.Context, q types.QueryServer, userAddr string, farmAddr sdk.AccAddress) sdk.Int {
 	USTBalance := sdk.NewInt(0)
-	fmt.Println(USTBalance)
 	var info stakerInfo
 	if err := util.ContractQuery(ctx, q, &wasmtypes.QueryContractStoreRequest{
-		ContractAddress: farmAddr,
+		ContractAddress: string(farmAddr),
 		QueryMsg:        []byte(fmt.Sprintf("{\"staker_info\": {\"owner\": \"%s\"}}}", userAddr))}, &info); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(info)
-
 	if !info.bondAmount.IsZero() {
 		USTBalance = USTBalance.Add(info.bondAmount.Quo(sdk.NewInt(2)))
 	}

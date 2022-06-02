@@ -16,12 +16,10 @@ var (
 		"terra1rvvz9r8ys755wy9hat39es03d6h25rtz2u329l",
 	}
 	FarmContracts = []string{
-		"terra1nmheu06jz6mxsg5n8nnmyn6fxgnvxzk28femx2",
-		"terra1vsd2sgk47tm262q7l3eq74u9rrek4ucn2w2jm5",
-		"terra1ar2lwxegfnap7umqx9ljp0wytt3t76yyc8ys2z",
-		"terra1uccez5grl2sr8xd4rswtgtc7ewf8ugfvcfutv5",
-		"terra1x3fcujqgk8uvn8vssw52jtwtanlu3shgj3ftlk",
-		"terra1rvvz9r8ys755wy9hat39es03d6h25rtz2u329l",
+		"terra14xg04lntty04vgqdcl8jnkclrkg8m532q6w2ga",
+		"terra1fvt7pfnxqrc8fx45nc5weg2hjwfz3ayevt3gha",
+		"terra13kq9rqxn0k252qfs4ww4zxzye83ypuye6w2hhm",
+		"terra14czgy66f5wf9vxgvvmt5ajrv5urxvhm0359lrk",
 	}
 )
 
