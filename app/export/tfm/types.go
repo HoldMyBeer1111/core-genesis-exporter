@@ -63,4 +63,10 @@ type (
 	tokenInfo struct {
 		TotalSupply sdk.Int `json:"total_supply"`
 	}
+	stakerInfo struct {
+		owner          string  `json:"owner"`
+		rewardIndex    sdk.Dec `json:"reward_index"`
+		bondAmount     sdk.Int `json:"bond_amount"`
+		pendingRewards sdk.Int `json:"pending_rewards"`
+	}
 )

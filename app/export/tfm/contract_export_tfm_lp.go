@@ -13,10 +13,9 @@ import (
 	wasmtypes "github.com/terra-money/core/x/wasm/types"
 )
 
-// ExportTfmLiquidity scan all factory contracts, look for pairs that have luna or ust,
-// then
+// ExportTfmLiquidity scan all factory contracts, look for pairs that have luna or ust
 func ExportTfmLiquidity(app *terra.TerraApp, bl util.Blacklist, contractLpHolders map[string]map[string]map[string]sdk.Int) (util.SnapshotBalanceAggregateMap, error) {
-	app.Logger().Info("Exporting Tfm")
+	app.Logger().Info("Exporting TFM pools")
 	ctx := util.PrepCtx(app)
 	qs := util.PrepWasmQueryServer(app)
 	keeper := app.WasmKeeper
