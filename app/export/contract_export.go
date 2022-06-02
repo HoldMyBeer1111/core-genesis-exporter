@@ -3,32 +3,7 @@ package app
 import (
 	"fmt"
 
-	"github.com/terra-money/core/app/export/alice"
-	"github.com/terra-money/core/app/export/anchor"
-	"github.com/terra-money/core/app/export/angel"
-	"github.com/terra-money/core/app/export/aperture"
-	"github.com/terra-money/core/app/export/astroport"
-	"github.com/terra-money/core/app/export/edge"
-	"github.com/terra-money/core/app/export/generic"
-	"github.com/terra-money/core/app/export/ink"
-	"github.com/terra-money/core/app/export/kinetic"
-	"github.com/terra-money/core/app/export/kujira"
-	"github.com/terra-money/core/app/export/lido"
-	"github.com/terra-money/core/app/export/loop"
-	"github.com/terra-money/core/app/export/native"
-	"github.com/terra-money/core/app/export/nebula"
-	"github.com/terra-money/core/app/export/nexus"
-	"github.com/terra-money/core/app/export/prism"
-	"github.com/terra-money/core/app/export/pylon"
-	"github.com/terra-money/core/app/export/randomearth"
-	"github.com/terra-money/core/app/export/stader"
-	"github.com/terra-money/core/app/export/starflet"
-	"github.com/terra-money/core/app/export/starterra"
-	"github.com/terra-money/core/app/export/steak"
-	"github.com/terra-money/core/app/export/suberra"
-	"github.com/terra-money/core/app/export/terrafloki"
-	"github.com/terra-money/core/app/export/terraswap"
-	"github.com/terra-money/core/app/export/whitewhale"
+	"github.com/terra-money/core/app/export/tfm"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -55,14 +30,14 @@ func ExportContracts(app *terra.TerraApp) []types.Balance {
 
 	// a global holder for all contracts and their contractInfo
 	// Export generics
-	genericsSnapshot, contractMap, err := generic.ExportGenericContracts(app, bl)
-	if err != nil {
-		panic(err)
-	}
+	// genericsSnapshot, contractMap, err := generic.ExportGenericContracts(app, bl)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	// // Export anchor
-	aUST := checkWithSs(util.CachedSBA(anchor.ExportAnchorDeposit, "anchor", app, bl))
-	bLunaInCustody := checkWithSs(util.CachedSBA(anchor.ExportbLUNA, "anchor-bluna", app, bl))
+	// // // Export anchor
+	// aUST := checkWithSs(util.CachedSBA(anchor.ExportAnchorDeposit, "anchor", app, bl))
+	// bLunaInCustody := checkWithSs(util.CachedSBA(anchor.ExportbLUNA, "anchor-bluna", app, bl))
 
 	// Export Compounders
 	compoundedLps, err := exportCompounders(app, snapshotType)
@@ -73,111 +48,99 @@ func ExportContracts(app *terra.TerraApp) []types.Balance {
 	check(mirror.AuditCompounders(app, compoundedLps))
 
 	// Export DEXs
-	astroportSnapshot := checkWithSs(astroport.ExportAstroportLP(app, bl, compoundedLps))
-	terraswapSnapshot := checkWithSs(terraswap.ExportTerraswapLiquidity(app, bl, compoundedLps))
-	loopSnapshot := checkWithSs(util.CachedSBA(loop.ExportLoopLP, "loop", app, bl))
+	// astroportSnapshot := checkWithSs(astroport.ExportAstroportLP(app, bl, compoundedLps))
+	// terraswapSnapshot := checkWithSs(terraswap.ExportTerraswapLiquidity(app, bl, compoundedLps))
+	tfmSnapshot := checkWithSs(tfm.ExportTfmLiquidity(app, bl, compoundedLps))
+	// loopSnapshot := checkWithSs(util.CachedSBA(loop.ExportLoopLP, "loop", app, bl))
 
 	// Export Vaults
-	suberraSs := checkWithSs(util.CachedSBA(suberra.ExportSuberra, "suberra", app, bl))
-	check(suberra.Audit(app, suberraSs))
-	whiteWhaleSs := checkWithSs(util.CachedSBA(whitewhale.ExportWhiteWhaleVaults, "whitewhale", app, bl))
-	check(whitewhale.Audit(app, whiteWhaleSs))
-	kujiraSs := checkWithSs(util.CachedSBA(kujira.ExportKujiraVault, "kujira", app, bl))
-	check(kujira.Audit(app, kujiraSs))
-	prismSs := checkWithSs(util.CachedSBA(prism.ExportContract, "prism", app, bl))
-	check(prism.Audit(app, prismSs))
-	prismLoSs := checkWithSs(util.CachedSBA(prism.ExportLimitOrderContract, "prism-limit-order", app, bl))
-	check(prism.AuditLOs(app, prismLoSs))
-	var apertureSs util.SnapshotBalanceAggregateMap
-	if snapshotType == util.Snapshot(util.PreAttack) {
-		apertureSs = checkWithSs(util.CachedSBA(aperture.ExportApertureVaultsPreAttack, "aperture-pre", app, bl))
-	} else {
-		apertureSs = checkWithSs(util.CachedSBA(aperture.ExportApertureVaultsPostAttack, "aperture-post", app, bl))
-	}
+	// suberraSs := checkWithSs(util.CachedSBA(suberra.ExportSuberra, "suberra", app, bl))
+	// check(suberra.Audit(app, suberraSs))
+	// whiteWhaleSs := checkWithSs(util.CachedSBA(whitewhale.ExportWhiteWhaleVaults, "whitewhale", app, bl))
+	// check(whitewhale.Audit(app, whiteWhaleSs))
+	// kujiraSs := checkWithSs(util.CachedSBA(kujira.ExportKujiraVault, "kujira", app, bl))
+	// check(kujira.Audit(app, kujiraSs))
+	// prismSs := checkWithSs(util.CachedSBA(prism.ExportContract, "prism", app, bl))
+	// check(prism.Audit(app, prismSs))
+	// prismLoSs := checkWithSs(util.CachedSBA(prism.ExportLimitOrderContract, "prism-limit-order", app, bl))
+	// check(prism.AuditLOs(app, prismLoSs))
+	// var apertureSs util.SnapshotBalanceAggregateMap
+	// if snapshotType == util.Snapshot(util.PreAttack) {
+	// 	apertureSs = checkWithSs(util.CachedSBA(aperture.ExportApertureVaultsPreAttack, "aperture-pre", app, bl))
+	// } else {
+	// 	apertureSs = checkWithSs(util.CachedSBA(aperture.ExportApertureVaultsPostAttack, "aperture-post", app, bl))
+	// }
 
-	edgeSs := checkWithSs(util.CachedSBA(edge.ExportContract, "edge", app, bl))
-	check(edge.Audit(app, edgeSs))
-	mirrorSs := checkWithSs(util.CachedSBA(mirror.ExportMirrorCdps, "mirror-cdp", app, bl))
-	check(mirror.AuditCdps(app, mirrorSs))
-	mirrorLoSs := checkWithSs(util.CachedSBA(mirror.ExportLimitOrderContract, "mirror-limit-order", app, bl))
-	check(mirror.AuditLOs(app, mirrorLoSs))
-	inkSs := checkWithSs(util.CachedSBA(ink.ExportContract, "ink", app, bl))
-	lunaXSs := checkWithSs(util.CachedSBA(stader.ExportLunaX, "stader", app, bl))
-	staderPoolSs := checkWithSs(util.CachedSBA(stader.ExportPools, "stader-pools", app, bl))
-	staderStakeSs := checkWithSs(util.CachedSBA(stader.ExportStakePlus, "stader-stake-plus", app, bl))
-	staderVaultSs := checkWithSs(util.CachedSBA(stader.ExportVaults, "stader-vaults", app, bl))
-	angelSs := checkWithSs(util.CachedSBA(angel.ExportEndowments, "angel", app, bl))
-	randomEarthSs := checkWithSs(util.CachedSBA(randomearth.ExportSettlements, "radomearth", app, bl))
-	starTerraSs := checkWithSs(util.CachedSBA(starterra.ExportIDO, "starterra", app, bl))
-	check(starterra.Audit(app, starTerraSs))
-	starfletSs := checkWithSs(util.CachedSBA(starflet.ExportArbitrageAUST, "starflet", app, bl))
-	pylonSs := checkWithSs(util.CachedSBA(pylon.ExportContract, "pylon", app, bl))
-	marsSs := make(util.SnapshotBalanceAggregateMap)
-	if snapshotType == util.Snapshot(util.PreAttack) {
-		marsSs = checkWithSs(util.CachedSBA(mars.ExportContract, "mars", app, bl))
-		check(mars.Audit(app, marsSs))
-	}
+	// edgeSs := checkWithSs(util.CachedSBA(edge.ExportContract, "edge", app, bl))
+	// check(edge.Audit(app, edgeSs))
+	// mirrorSs := checkWithSs(util.CachedSBA(mirror.ExportMirrorCdps, "mirror-cdp", app, bl))
+	// check(mirror.AuditCdps(app, mirrorSs))
+	// mirrorLoSs := checkWithSs(util.CachedSBA(mirror.ExportLimitOrderContract, "mirror-limit-order", app, bl))
+	// check(mirror.AuditLOs(app, mirrorLoSs))
+	// inkSs := checkWithSs(util.CachedSBA(ink.ExportContract, "ink", app, bl))
+	// lunaXSs := checkWithSs(util.CachedSBA(stader.ExportLunaX, "stader", app, bl))
+	// staderPoolSs := checkWithSs(util.CachedSBA(stader.ExportPools, "stader-pools", app, bl))
+	// staderStakeSs := checkWithSs(util.CachedSBA(stader.ExportStakePlus, "stader-stake-plus", app, bl))
+	// staderVaultSs := checkWithSs(util.CachedSBA(stader.ExportVaults, "stader-vaults", app, bl))
+	// angelSs := checkWithSs(util.CachedSBA(angel.ExportEndowments, "angel", app, bl))
+	// randomEarthSs := checkWithSs(util.CachedSBA(randomearth.ExportSettlements, "radomearth", app, bl))
+	// starTerraSs := checkWithSs(util.CachedSBA(starterra.ExportIDO, "starterra", app, bl))
+	// check(starterra.Audit(app, starTerraSs))
+	// starfletSs := checkWithSs(util.CachedSBA(starflet.ExportArbitrageAUST, "starflet", app, bl))
+	// pylonSs := checkWithSs(util.CachedSBA(pylon.ExportContract, "pylon", app, bl))
+	// marsSs := make(util.SnapshotBalanceAggregateMap)
+	// if snapshotType == util.Snapshot(util.PreAttack) {
+	// 	marsSs = checkWithSs(util.CachedSBA(mars.ExportContract, "mars", app, bl))
+	// 	check(mars.Audit(app, marsSs))
+	// }
 
-	// Export miscellaneous
-	flokiSs := checkWithSs(util.CachedSBA(terrafloki.ExportTerraFloki, "floki", app, bl))
-	flokiRefundsSs := checkWithSs(util.CachedSBA(terrafloki.ExportFlokiRefunds, "floki-refunds", app, bl))
-	nebulaSs := checkWithSs(util.CachedSBA(nebula.ExportNebulaCommunityFund, "nebula", app, bl))
-	aliceSs := checkWithSs(util.CachedSBA(alice.ExportAlice, "alice", app, bl))
-	kineticSs := checkWithSs(util.CachedSBA(kinetic.ExportKinetic, "kinetic", app, bl))
-	steakSs := checkWithSs(util.CachedSBA(steak.ExportSteak, "steak", app, bl))
-	astroportLockDropSs := checkWithSs(util.CachedSBA(astroport.ExportAstroportLockdrop, "astroport-lockdrop", app, bl))
-	nexusSs, err := nexus.ExportNexus(app, astroportSnapshot, bl)
-	check(err)
+	// // Export miscellaneous
+	// flokiSs := checkWithSs(util.CachedSBA(terrafloki.ExportTerraFloki, "floki", app, bl))
+	// flokiRefundsSs := checkWithSs(util.CachedSBA(terrafloki.ExportFlokiRefunds, "floki-refunds", app, bl))
+	// nebulaSs := checkWithSs(util.CachedSBA(nebula.ExportNebulaCommunityFund, "nebula", app, bl))
+	// aliceSs := checkWithSs(util.CachedSBA(alice.ExportAlice, "alice", app, bl))
+	// kineticSs := checkWithSs(util.CachedSBA(kinetic.ExportKinetic, "kinetic", app, bl))
+	// steakSs := checkWithSs(util.CachedSBA(steak.ExportSteak, "steak", app, bl))
+	// astroportLockDropSs := checkWithSs(util.CachedSBA(astroport.ExportAstroportLockdrop, "astroport-lockdrop", app, bl))
+	// nexusSs, err := nexus.ExportNexus(app, astroportSnapshot, bl)
+	// check(err)
 
 	snapshot := util.MergeSnapshots(
-		genericsSnapshot,
-		// DEX
-		astroportSnapshot, terraswapSnapshot, loopSnapshot,
-		suberraSs, whiteWhaleSs, kujiraSs, prismSs,
-		prismLoSs, apertureSs, edgeSs, mirrorSs,
-		mirrorLoSs, inkSs, lunaXSs, staderPoolSs,
-		staderStakeSs, staderVaultSs, angelSs,
-		randomEarthSs, starfletSs, flokiSs,
-		flokiRefundsSs, nebulaSs, aliceSs, kineticSs,
-		steakSs, astroportLockDropSs, nexusSs, marsSs,
-		pylonSs,
-		// anchor
-		aUST,
-		bLunaInCustody,
+		tfmSnapshot,
 	)
 
 	// Export Liquid Staking
-	check(nexus.ResolveToBLuna(app, snapshot, bl))
-	check(lido.ExportBSTLunaHolders(app, snapshot, bl))
-	check(lido.ExportLidoRewards(app, snapshot, bl))
-	check(lido.ResolveLidoLuna(app, snapshot, bl))
-	check(prism.ResolveToLuna(app, snapshot, bl))
-	check(steak.ResolveSteakLuna(app, snapshot))
-	check(stader.ResolveToLuna(app, snapshot))
+	// check(nexus.ResolveToBLuna(app, snapshot, bl))
+	// check(lido.ExportBSTLunaHolders(app, snapshot, bl))
+	// check(lido.ExportLidoRewards(app, snapshot, bl))
+	// check(lido.ResolveLidoLuna(app, snapshot, bl))
+	// check(prism.ResolveToLuna(app, snapshot, bl))
+	// check(steak.ResolveSteakLuna(app, snapshot))
+	// check(stader.ResolveToLuna(app, snapshot))
 
-	bondedLuna := checkWithSs(native.ExportAllBondedLuna(app, bl))
-	nativeBalances := checkWithSs(native.ExportAllNativeBalances(app))
+	// bondedLuna := checkWithSs(native.ExportAllBondedLuna(app, bl))
+	// nativeBalances := checkWithSs(native.ExportAllNativeBalances(app))
 
-	snapshot = util.MergeSnapshots(snapshot, bondedLuna, nativeBalances)
-	snapshot.ApplyBlackList(bl)
+	// snapshot = util.MergeSnapshots(snapshot, bondedLuna, nativeBalances)
+	// snapshot.ApplyBlackList(bl)
 
-	if snapshotType == util.Snapshot(util.PostAttack) {
-		for _, sbs := range snapshot {
-			for i, b := range sbs {
-				if b.Denom == util.DenomAUST {
-					sbs[i] = util.SnapshotBalance{
-						Denom: util.DenomUST,
-						Balance: b.Balance,
-					}
-				}
-			}
-		}
-	}
+	// if snapshotType == util.Snapshot(util.PostAttack) {
+	// 	for _, sbs := range snapshot {
+	// 		for i, b := range sbs {
+	// 			if b.Denom == util.DenomAUST {
+	// 				sbs[i] = util.SnapshotBalance{
+	// 					Denom:   util.DenomUST,
+	// 					Balance: b.Balance,
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	// remove all contract holdings from snapshot, minus some whitelisted ones
-	util.RemoveContractBalances(snapshot, contractMap)
+	// // remove all contract holdings from snapshot, minus some whitelisted ones
+	// util.RemoveContractBalances(snapshot, contractMap)
 
-	finalAudit(app, snapshot, snapshotType)
+	// finalAudit(app, snapshot, snapshotType)
 
 	return snapshot.ExportToBalances()
 }
