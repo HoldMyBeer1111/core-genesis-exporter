@@ -40,17 +40,18 @@ func ExportContracts(app *terra.TerraApp) []types.Balance {
 	// bLunaInCustody := checkWithSs(util.CachedSBA(anchor.ExportbLUNA, "anchor-bluna", app, bl))
 
 	// Export Compounders
-	compoundedLps, err := exportCompounders(app, snapshotType)
-	if err != nil {
-		panic(err)
-	}
+	// compoundedLps, err := exportCompounders(app, snapshotType)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	check(mirror.AuditCompounders(app, compoundedLps))
+	// check(mirror.AuditCompounders(app, compoundedLps))
 
 	// Export DEXs
 	// astroportSnapshot := checkWithSs(astroport.ExportAstroportLP(app, bl, compoundedLps))
 	// terraswapSnapshot := checkWithSs(terraswap.ExportTerraswapLiquidity(app, bl, compoundedLps))
-	tfmSnapshot := checkWithSs(tfm.ExportTfmLiquidity(app, bl, compoundedLps))
+	tfmSnapshot := checkWithSs(tfm.ExportTfmFarms(app, bl))
+	// tfmSnapshot := checkWithSs(tfm.ExportTfmLiquidity(app, bl, map[string]map[string]map[string]sdk.Int{}))
 	// loopSnapshot := checkWithSs(util.CachedSBA(loop.ExportLoopLP, "loop", app, bl))
 
 	// Export Vaults

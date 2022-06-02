@@ -32,12 +32,11 @@ func ExportTfmLiquidity(app *terra.TerraApp, bl util.Blacklist, contractLpHolder
 		var pair pair
 		util.MustUnmarshalTMJSON(value, &pair)
 		pairAddr := sdk.AccAddress(pair.ContractAddr).String()
-
 		if err := util.ContractQuery(ctx, qs, &wasmtypes.QueryContractStoreRequest{
 			ContractAddress: pairAddr,
 			QueryMsg:        []byte("{\"pool\":{}}"),
 		}, &pool); err != nil {
-			// fmt.Printf("tfm: irregular pair, skipping: %s\n", pairAddr)
+			fmt.Printf("tfm: irregular pair, skipping: %s\n", err)
 			return false
 		}
 
@@ -108,11 +107,8 @@ func ExportTfmLiquidity(app *terra.TerraApp, bl util.Blacklist, contractLpHolder
 	for lp, staking := range stakingHoldings {
 		if lpHolding, ok := lpHoldersMap[lp]; ok {
 			if amount, okk := lpHolding[staking.StakingAddr]; okk {
-				// app.Logger().Info(fmt.Sprintf("...... Resolving stakers: %s, Added %d users, amount %s",
-				// staking.StakingAddr, len(staking.Holdings), util.Sum(staking.Holdings),
-				// ))
 				err := util.AlmostEqual(
-					fmt.Sprintf("terraswap staking %s lp %s\n", staking.StakingAddr, lp),
+					fmt.Sprintf("tfm staking %s lp %s\n", staking.StakingAddr, lp),
 					amount,
 					util.Sum(staking.Holdings),
 					sdk.NewInt(1000000),
