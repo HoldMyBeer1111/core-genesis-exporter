@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
+	tmtypes "github.com/tendermint/tendermint/types"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
@@ -30,7 +31,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	terraapp "github.com/terra-money/core/app"
@@ -267,7 +267,6 @@ func (a appCreator) appExport(
 		terraApp = terraapp.NewTerraApp(logger, db, traceStore, true, map[int64]bool{}, homePath, cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)), a.encodingConfig, appOpts, wasmconfig.DefaultConfig())
 	}
 
-	// export partial state with validator
 	ctx := terraApp.NewContext(true, tmproto.Header{Height: terraApp.LastBlockHeight()})
 	height = terraApp.LastBlockHeight() + 1
 
@@ -284,22 +283,14 @@ func (a appCreator) appExport(
 	genState := make(map[string]json.RawMessage)
 	genState["bank"] = bankState
 
-	// partial export
-	exportModules := []string{"wasm"}
-
-	for _, moduleName := range exportModules {
-		genState[moduleName] = terraApp.ModuleManager().Modules[moduleName].ExportGenesis(ctx, terraApp.AppCodec())
-	}
-
 	appState, err := json.MarshalIndent(genState, "", "  ")
 	if err != nil {
 		return servertypes.ExportedApp{}, err
 	}
 
-	validators, err := staking.WriteValidators(ctx, terraApp.StakingKeeper)
 	return servertypes.ExportedApp{
 		AppState:        appState,
-		Validators:      validators,
+		Validators:      []tmtypes.GenesisValidator{},
 		Height:          height,
 		ConsensusParams: terraApp.BaseApp.GetConsensusParams(ctx),
 	}, err
