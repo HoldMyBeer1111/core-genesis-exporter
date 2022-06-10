@@ -48,7 +48,7 @@ var (
 
 	AddressSpectrumUSTLPStrategy   = "terra1jxh7hahwxlsy5cckkyhuz50a60mpn5tr0px6tq"
 	AddressSpectrumNLUNALPStrategy = "terra19kzel57gvx42e628k6frh624x5vm2kpck9cr9c"
-	AddressSpectrumNETHStrategy    = "terra1xw3jzqwrql5fvddchzxycd2ygrep5kudsden5c"
+	AddressSpectrumNETHLPStrategy  = "terra1xw3jzqwrql5fvddchzxycd2ygrep5kudsden5c"
 )
 
 func ExportNexus(app *terra.TerraApp) (util.SnapshotBalanceAggregateMap, error) {
@@ -202,6 +202,12 @@ func ExportNexus(app *terra.TerraApp) (util.SnapshotBalanceAggregateMap, error) 
 		return nil, err
 	}
 
+	logger.Info("Fetching PSI-NETH Spectrum depositors")
+	var spectrumNETHLPDepositorMap = make(util.BalanceMap)
+	if err := getSpectrumBalances(ctx, keeper, qs, AddressSpectrumNETHLPStrategy, AddressAstroNETHPair, AddressAstroNETHLPToken, spectrumNETHLPDepositorMap); err != nil {
+		return nil, err
+	}
+
 	//================================
 
 	logger.Info("Merging")
@@ -216,10 +222,17 @@ func ExportNexus(app *terra.TerraApp) (util.SnapshotBalanceAggregateMap, error) 
 		terraUSTLPHolderMap,
 		terraNLUNALPHolderMap,
 		terraNETHLPHolderMap,
+		astroUSTLPStakerMap,
+		astroNLUNALPStakerMap,
+		astroNETHLPStakerMap,
+		terraUSTLPStakerMap,
+		terraNLUNALPStakerMap,
+		terraNETHLPStakerMap,
 		astroLPStakerMap,
 		apolloFarmerMap,
 		spectrumUSTLPDepositorMap,
 		spectrumNLUNALPDepositorMap,
+		spectrumNETHLPDepositorMap,
 	)
 
 	logger.Info("Finalizing")
