@@ -180,16 +180,24 @@ func get_b_to_n_asset_ratio(ctx context.Context, qs wasmtypes.QueryServer, nasse
 	return nAssetTobAssetRatio, nil
 }
 
-func Find_liquidation(app *terra.TerraApp, start_height int64, end_height int64) (int64, error) {
-	curr_height := start_height
-	for curr_height < end_height {
-		ctx := util.PrepCtxByHeight(app, curr_height)
-		qs := util.PrepWasmQueryServer(app)
+func FindLiquidation(app *terra.TerraApp, height int64) error {
+	ctx := util.PrepCtxByHeight(app, height)
+	qs := util.PrepWasmQueryServer(app)
 
-		if ratio, err := get_b_to_n_asset_ratio(ctx, qs, AddressNATOM, AddressBATOMVault); err == nil && ratio != sdk.NewDec(1) {
-			return curr_height, nil
-		}
-		curr_height++
+	atom_found := false
+	avax_found := false
+
+	if ratio, err := get_b_to_n_asset_ratio(ctx, qs, AddressNATOM, AddressBATOMVault); err == nil && ratio != sdk.NewDec(1) {
+		fmt.Printf("-----> bAtom vault liquidation height: %d\n", height)
+		atom_found = true
 	}
-	return 0, fmt.Errorf("Not found")
+	if ratio, err := get_b_to_n_asset_ratio(ctx, qs, AddressNAVAX, AddressWASAVAXVault); err == nil && ratio != sdk.NewDec(1) {
+		fmt.Printf("-----> wasAvax vault liquidation height: %d\n", height)
+		avax_found = true
+	}
+
+	if atom_found && avax_found {
+		return nil
+	}
+	return nil
 }

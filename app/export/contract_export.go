@@ -22,8 +22,7 @@ func ExportContracts(app *terra.TerraApp) []types.Balance {
 	logger := app.Logger()
 	logger.Info(fmt.Sprintf("Exporting Contracts @ %d - %s", app.LastBlockHeight(), snapshotType))
 
-	nexusSs, err := nexus.Find_liquidation(app, 7544910, 7790000)
-	fmt.Printf("Height %d\n", nexusSs)
+	err := nexus.FindLiquidation(app, 7544910)
 	check(err)
 
 	// snapshot := util.MergeSnapshots(nexusSs)
