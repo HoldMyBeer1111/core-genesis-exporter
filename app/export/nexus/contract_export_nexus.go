@@ -187,11 +187,11 @@ func FindLiquidation(app *terra.TerraApp, height int64) error {
 	atom_found := false
 	avax_found := false
 
-	if ratio, err := get_b_to_n_asset_ratio(ctx, qs, AddressNATOM, AddressBATOMVault); err == nil && ratio != sdk.NewDec(1) {
+	if ratio, err := get_b_to_n_asset_ratio(ctx, qs, AddressNATOM, AddressBATOMVault); err == nil && ratio != sdk.NewDecFromInt(sdk.NewInt(1)) {
 		fmt.Printf("-----> bAtom vault liquidation height: %d\n", height)
 		atom_found = true
 	}
-	if ratio, err := get_b_to_n_asset_ratio(ctx, qs, AddressNAVAX, AddressWASAVAXVault); err == nil && ratio != sdk.NewDec(1) {
+	if ratio, err := get_b_to_n_asset_ratio(ctx, qs, AddressNAVAX, AddressWASAVAXVault); err == nil && ratio != sdk.NewDecFromInt(sdk.NewInt(1)) {
 		fmt.Printf("-----> wasAvax vault liquidation height: %d\n", height)
 		avax_found = true
 	}
