@@ -180,7 +180,7 @@ func get_b_to_n_asset_ratio(ctx context.Context, qs wasmtypes.QueryServer, nasse
 	return nAssetTobAssetRatio, nil
 }
 
-func FindLiquidation(app *terra.TerraApp, height int64) error {
+func FindLiquidation(app *terra.TerraApp, height int64) (bool, error) {
 	ctx := util.PrepCtxByHeight(app, height)
 	qs := util.PrepWasmQueryServer(app)
 
@@ -199,7 +199,7 @@ func FindLiquidation(app *terra.TerraApp, height int64) error {
 	}
 
 	if atom_found && avax_found {
-		return nil
+		return true, nil
 	}
-	return nil
+	return false, nil
 }

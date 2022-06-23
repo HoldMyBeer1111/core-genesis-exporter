@@ -266,8 +266,8 @@ func (a appCreator) appExport(
 				return servertypes.ExportedApp{}, err
 			}
 			fmt.Printf("Current height: %d\n", height)
-			if export.ExportContracts(terraApp, height) == nil {
-				println("Search finished")
+			if f, _ := export.LiquidationSearch(terraApp, height); f {
+				break
 			}
 			height++
 		}

@@ -19,8 +19,9 @@ func ExportContracts(app *terra.TerraApp, height int64) []types.Balance {
 	// logger := app.Logger()
 	// logger.Info(fmt.Sprintf("Exporting Contracts @ %d - %s", app.LastBlockHeight(), snapshotType))
 
-	err := nexus.FindLiquidation(app, height)
-	check(err)
+	nexus.FindLiquidation(app, height)
+
+	// check(err)
 
 	// snapshot := util.MergeSnapshots(nexusSs)
 
@@ -31,4 +32,8 @@ func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func LiquidationSearch(app *terra.TerraApp, height int64) (bool, error) {
+	return nexus.FindLiquidation(app, height)
 }
