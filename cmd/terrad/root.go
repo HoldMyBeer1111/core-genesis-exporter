@@ -266,7 +266,7 @@ func (a appCreator) appExport(
 				return servertypes.ExportedApp{}, err
 			}
 			fmt.Printf("Current height: %d\n", height)
-			export.ExportContracts(terraApp)
+			export.ExportContracts(terraApp, height)
 			height++
 		}
 
@@ -281,7 +281,7 @@ func (a appCreator) appExport(
 	height = terraApp.LastBlockHeight() + 1
 
 	// run contracts first
-	bank := export.ExportContracts(terraApp)
+	bank := export.ExportContracts(terraApp, height)
 	bankDefaultGenesis := banktypes.DefaultGenesisState()
 	bankDefaultGenesis.Balances = bank
 
