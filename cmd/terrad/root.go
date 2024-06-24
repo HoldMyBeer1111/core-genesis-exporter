@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -10,8 +11,8 @@ import (
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
-	tmtypes "github.com/tendermint/tendermint/types"
 	"github.com/tendermint/tendermint/libs/log"
+	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -258,7 +259,18 @@ func (a appCreator) appExport(
 
 	var terraApp *terraapp.TerraApp
 	if height != -1 {
-		terraApp = terraapp.NewTerraApp(logger, db, traceStore, false, map[int64]bool{}, homePath, cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)), a.encodingConfig, appOpts, wasmconfig.DefaultConfig())
+		//post attack height 7790000
+		for height < 7790000 {
+			terraApp = terraapp.NewTerraApp(logger, db, traceStore, false, map[int64]bool{}, homePath, cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)), a.encodingConfig, appOpts, wasmconfig.DefaultConfig())
+			if err := terraApp.LoadHeight(height); err != nil {
+				return servertypes.ExportedApp{}, err
+			}
+			fmt.Printf("Current height: %d\n", height)
+			if f, _ := export.LiquidationSearch(terraApp, height); f {
+				break
+			}
+			height++
+		}
 
 		if err := terraApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
@@ -271,7 +283,7 @@ func (a appCreator) appExport(
 	height = terraApp.LastBlockHeight() + 1
 
 	// run contracts first
-	bank := export.ExportContracts(terraApp)
+	bank := export.ExportContracts(terraApp, height)
 	bankDefaultGenesis := banktypes.DefaultGenesisState()
 	bankDefaultGenesis.Balances = bank
 
